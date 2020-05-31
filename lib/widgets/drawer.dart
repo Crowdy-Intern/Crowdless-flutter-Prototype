@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../pages/ranking.dart';
 import '../pages/heatmap.dart';
+import '../pages/storeMap.dart';
 import '../pages/about.dart';
 
 Drawer buildDrawer(BuildContext context, String currentRoute) {
@@ -28,6 +29,13 @@ Drawer buildDrawer(BuildContext context, String currentRoute) {
           selected: currentRoute == Ranking.route,
           onTap: () {
             Navigator.pushReplacementNamed(context, Ranking.route);
+          },
+        ),
+        ListTile(
+          title: const Text('Local stores'),
+          selected: currentRoute == StoreMap.route,
+          onTap: () {
+            Navigator.pushReplacementNamed(context, StoreMap.route);
           },
         ),
         ListTile(
