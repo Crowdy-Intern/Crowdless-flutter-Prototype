@@ -108,11 +108,11 @@ class MapPageState extends State<MapPage> {
         title: Row(
           children: [
             Image.asset(
-              ('assets/logo_round.png'),
+              ('assets/icons/logo_crowdy_small.png'),
               fit: BoxFit.contain,
               height: 32,
             ),
-            Text('Crowdy - Your Level: '),
+            Text(' Crowdy - Your Level: '),
             Image.asset(('assets/4Goldfaultier.png'),
               fit: BoxFit.contain,
               height: 32,

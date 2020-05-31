@@ -10,7 +10,7 @@ Drawer buildDrawer(BuildContext context, String currentRoute) {
       children: <Widget>[
         DrawerHeader(
           child: Image(
-            image: AssetImage('assets/icons/crowdless_icon_small.png'),
+            image: AssetImage('assets/icons/logo_medium.png'),
           ),
           decoration: BoxDecoration(
             color: Color(0xffF8E2B0),

@@ -8,7 +8,17 @@ Visit our website: http://www.crowdy.ch/
 
 formerly: http://www.crowdless.ch/
 
+![demo](screenshots/crowdy.png)
+
+![titlescreen](screenshots/search.png)
+
+![heatmap](screenshots/heatmap.png)
+
+![ranking](screenshots/ranking.gif)
+
 See also our very first web-prototype at https://github.com/BalzGuenat/VersusVirus
+
+
 
 
 
