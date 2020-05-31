@@ -8,13 +8,13 @@ Visit our website: http://www.crowdy.ch/
 
 formerly: http://www.crowdless.ch/
 
-![demo](screenshots/crowdy.png)
+![demo](screenshots/crowdy.gif)
 
-![titlescreen](screenshots/search.png)
+![titlescreen](screenshots/search.jpg)
 
-![heatmap](screenshots/heatmap.png)
+![heatmap](screenshots/heatmap.jpg)
 
-![ranking](screenshots/ranking.gif)
+![ranking](screenshots/ranking.jpg)
 
 See also our very first web-prototype at https://github.com/BalzGuenat/VersusVirus
 
