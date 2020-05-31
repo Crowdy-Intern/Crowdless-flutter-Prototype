@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import '../pages/ranking.dart';
 import '../pages/heatmap.dart';
 
-
 Drawer buildDrawer(BuildContext context, String currentRoute) {
   return Drawer(
     child: ListView(
       children: <Widget>[
-        const DrawerHeader(
-          child: Center(
-            child: Text('Crowdy menu'),
+        DrawerHeader(
+          child: Image(
+            image: AssetImage('assets/icons/crowdless_icon_small.png'),
+          ),
+          decoration: BoxDecoration(
+            color: Color(0xffF8E2B0),
           ),
         ),
-
         ListTile(
           title: const Text('Heatmap'),
           selected: currentRoute == MapPage.route,
