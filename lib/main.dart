@@ -4,7 +4,7 @@ import 'package:latlong/latlong.dart';
 
 import './pages/ranking.dart';
 import './pages/heatmap.dart';
-
+import './pages/about.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
         Ranking.route: (context) => Ranking(),
+        About.route: (context) => About(),
       }
     );
   }
