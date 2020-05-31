@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +58,7 @@ class MapPageState extends State<MapPage> {
             (map_corner_left_down.longitude - map_corner_right_up.longitude) /
                 grid_size_vert *
                 grid_count_verti;
+        var rng = new Random();
         markers.add(Marker(
           point: LatLng(latitude, longitude),
           builder: (ctx) => Container(
@@ -64,7 +67,7 @@ class MapPageState extends State<MapPage> {
                 child: Icon(
                   Icons.stop,
                   size: 90.0,
-                  color: Colors.green.withOpacity(0.5),
+                  color: getRandColor(rng.nextInt(100)),// Colors.green.withOpacity(0.5),
                 ),
               )),
         ));
@@ -72,10 +75,29 @@ class MapPageState extends State<MapPage> {
     }
   }
 
+  Color getRandColor(int r){
+    if (r < 20){
+      return Colors.red.withOpacity(0.5);
+    } else if (r < 70) {
+      return Colors.green.withOpacity(0.5);
+    } else if (r < 100) {
+      return Colors.orange.withOpacity(0.5);
+    }
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(title: Text('Crowdless')),
+      appBar: AppBar(title: Row(
+          children: [
+            Image.asset(('assets/logo_round.png'),
+            fit: BoxFit.contain,
+            height: 32,
+            ),
+            Text('Crowdy')
+          ],
+        ),
+      ),
       drawer: buildDrawer(context, route),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -85,7 +107,7 @@ class MapPageState extends State<MapPage> {
           });
         },
         icon: Icon(Icons.loop),
-        label: Text("Update the grid"),
+        label: Text("Show occupancy"),
       ),
       body: FlutterMap(
         mapController: mapController,

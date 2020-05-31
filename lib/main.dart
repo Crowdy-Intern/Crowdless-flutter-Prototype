@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Crowdless',
+      title: 'Crowdy',
       home: MapPage(),
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
