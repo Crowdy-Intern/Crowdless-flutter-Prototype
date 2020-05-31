@@ -6,6 +6,10 @@ class Ranking extends StatelessWidget {
   static const String route = 'ranking';
   Ranking({Key key}) : super(key: key);
 
+  Image getLevelIcon(int points){
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,10 +25,16 @@ class Ranking extends StatelessWidget {
             ),
             Flexible(
               child: DataTable(
-                columns: const <DataColumn>[
+                columns: <DataColumn>[
                   DataColumn(
                     label: Text(
-                      'Nickname',
+                      'Level',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'User',
                       style: TextStyle(fontStyle: FontStyle.italic),
                     ),
                   ),
@@ -47,10 +57,16 @@ class Ranking extends StatelessWidget {
                     ),
                   ),
                 ],
-                rows: const <DataRow>[
+                rows: <DataRow>[
                   DataRow(
                     cells: <DataCell>[
-                      DataCell(Text('Sarah')),
+                        DataCell(
+                          Image.asset(('assets/4Goldfaultier.png'),
+                          fit: BoxFit.contain,
+                          height: 32,
+                        ),
+                      ),
+                      DataCell(Text('Sarahhh')),
                       DataCell(Text('200000')),
                       DataCell(Text('1')),
                       DataCell(Text('up')),
@@ -58,7 +74,13 @@ class Ranking extends StatelessWidget {
                   ),
                   DataRow(
                     cells: <DataCell>[
-                      DataCell(Text('Janine')),
+                      DataCell(
+                        Image.asset(('assets/3Schildkroete.png'),
+                          fit: BoxFit.contain,
+                          height: 32,
+                        ),
+                      ),
+                      DataCell(Text('Jannn33')),
                       DataCell(Text('33587')),
                       DataCell(Text('2')),
                       DataCell(Text('up')),
@@ -66,8 +88,14 @@ class Ranking extends StatelessWidget {
                   ),
                   DataRow(
                     cells: <DataCell>[
-                      DataCell(Text('William')),
-                      DataCell(Text('27')),
+                      DataCell(
+                        Image.asset(('assets/1Affe.png'),
+                          fit: BoxFit.contain,
+                          height: 32,
+                        ),
+                      ),
+                      DataCell(Text('Will')),
+                      DataCell(Text('225')),
                       DataCell(Text('3')),
                       DataCell(Text('down')),
                 ],

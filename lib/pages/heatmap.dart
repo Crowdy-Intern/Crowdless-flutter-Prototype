@@ -94,7 +94,7 @@ class MapPageState extends State<MapPage> {
             fit: BoxFit.contain,
             height: 32,
             ),
-            Text('Crowdy')
+            Text('Crowdy'),
           ],
         ),
       ),
