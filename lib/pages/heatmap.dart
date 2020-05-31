@@ -21,6 +21,9 @@ class MapPage extends StatefulWidget {
 class MapPageState extends State<MapPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   static LatLng zurich = LatLng(47.37174, 8.54226);
+  static LatLng basel = LatLng(47.5596, 7.5886);
+  LatLng showLocation = zurich;
+  String searchFor = '';
   static const String route = '/';
 
   MapController mapController;
@@ -72,6 +75,7 @@ class MapPageState extends State<MapPage> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
@@ -87,17 +91,65 @@ class MapPageState extends State<MapPage> {
         icon: Icon(Icons.loop),
         label: Text("Update the grid"),
       ),
-      body: FlutterMap(
-        mapController: mapController,
-        options: MapOptions(
-          center: zurich,
-          zoom: 14.0,
-        ),
-        layers: [
-          TileLayerOptions(
-              urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-              subdomains: ['a', 'b', 'c']),
-          MarkerLayerOptions(markers: markers)
+      body: Stack(
+        children: [
+          FlutterMap(
+            mapController: mapController,
+            options: MapOptions(
+              center: zurich,
+              zoom: 14.0,
+            ),
+            layers: [
+              TileLayerOptions(
+                  urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  subdomains: ['a', 'b', 'c']),
+              MarkerLayerOptions(markers: markers)
+            ],
+          ),
+          Positioned(
+            top: 10,
+            right: 15,
+            left: 15,
+            child: Container(
+              color: Colors.white,
+              child: Row(
+                children: <Widget>[
+                  IconButton(
+                    splashColor: Colors.grey,
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      print("pressed");
+                      setState(() {
+                        if (searchFor != 'Zürich') {
+                          showLocation = basel;
+                        } else {
+                          showLocation = zurich;
+                        }
+                      });
+                      mapController.move(showLocation, 14.0);
+                    },
+                  ),
+                  Expanded(
+                    child: TextField(
+                      cursorColor: Colors.black,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.search,
+                      onChanged: (text) {
+                        setState(() {
+                          searchFor = text;
+                        });
+                      },
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding:
+                          EdgeInsets.symmetric(horizontal: 15),
+                          hintText: "Search..."),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
