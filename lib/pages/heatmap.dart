@@ -4,13 +4,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:flutter/material.dart';
 
-
 import '../widgets/drawer.dart';
 
 class MapPage extends StatefulWidget {
   static const String route = '/';
 
-  String getRoute(){
+  String getRoute() {
     return route;
   }
 
@@ -36,15 +35,26 @@ class MapPageState extends State<MapPage> {
     mapController = MapController();
   }
 
-  var grid_size_hori = 11;
-  var grid_size_vert = 8;
-  var distance_bt_grid = 1;
+  Size screenSize(BuildContext context) {
+    return MediaQuery.of(context).size;
+  }
 
   var markers = <Marker>[];
+  var grid_size_hori = 11;
+  var grid_size_vert = 8;
+
   void _addMarkerFromList() {
     while (markers.isNotEmpty) {
       markers.removeLast();
     }
+    if (screenSize(context).aspectRatio > 1) {
+      grid_size_hori = 6;
+      grid_size_vert = 15;
+    } else {
+      grid_size_hori = 11;
+      grid_size_vert = 8;
+    }
+
     var map_corner_right_up = mapController.bounds.northEast;
     var map_corner_left_down = mapController.bounds.southWest;
     for (int grid_count_hori in [
@@ -62,24 +72,26 @@ class MapPageState extends State<MapPage> {
                 grid_size_vert *
                 grid_count_verti;
         var rng = new Random();
+        var min_screen_side = screenSize(context).shortestSide;
         markers.add(Marker(
           point: LatLng(latitude, longitude),
           builder: (ctx) => Container(
               child: GestureDetector(
-                onTap: () {},
-                child: Icon(
-                  Icons.stop,
-                  size: 90.0,
-                  color: getRandColor(rng.nextInt(100)),// Colors.green.withOpacity(0.5),
-                ),
-              )),
+            onTap: () {},
+            child: Icon(
+              Icons.stop,
+              size: min_screen_side * 0.2,
+              color: getRandColor(
+                  rng.nextInt(100)), // Colors.green.withOpacity(0.5),
+            ),
+          )),
         ));
       }
     }
   }
 
-  Color getRandColor(int r){
-    if (r < 20){
+  Color getRandColor(int r) {
+    if (r < 20) {
       return Colors.red.withOpacity(0.5);
     } else if (r < 70) {
       return Colors.green.withOpacity(0.5);
@@ -92,11 +104,13 @@ class MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(title: Row(
+      appBar: AppBar(
+        title: Row(
           children: [
-            Image.asset(('assets/logo_round.png'),
-            fit: BoxFit.contain,
-            height: 32,
+            Image.asset(
+              ('assets/logo_round.png'),
+              fit: BoxFit.contain,
+              height: 32,
             ),
             Text('Crowdy - Your Level: '),
             Image.asset(('assets/4Goldfaultier.png'),
