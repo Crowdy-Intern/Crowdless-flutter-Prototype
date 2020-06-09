@@ -1,10 +1,46 @@
-import 'dart:math';
-
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter/foundation.dart';
+import 'dart:async' show Future;
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
 import '../widgets/drawer.dart';
+
+class heatmapCell {
+  final int load;
+  final int hour;
+  final int weekday;
+  final num lat;
+  final num lng;
+
+  heatmapCell({this.load, this.hour, this.weekday, this.lat, this.lng});
+
+  factory heatmapCell.fromJson(Map<String, dynamic> json) {
+    return heatmapCell(
+      load: json['load'] as int,
+      hour: json['hour'] as int,
+      weekday: json['weekday'] as int,
+      lat: json['lat'] as num,
+      lng: json['lng'] as num,
+    );
+  }
+}
+
+List<heatmapCell> parseHeatmapCells(String responseBody) {
+  final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+  return parsed.map<heatmapCell>((json) => heatmapCell.fromJson(json)).toList();
+}
+
+Future<String> _loadHeatmapCellsAsset() async {
+  return await rootBundle.loadString('assets/heatmaps_bern_swisscom_mod.json');
+}
+
+Future<List<heatmapCell>> _loadHeatmapCells() async {
+  String jsonString = await _loadHeatmapCellsAsset();
+  print('JSON Loaded');
+  return compute(parseHeatmapCells, jsonString);
+}
 
 class MapPage extends StatefulWidget {
   static const String route = '/';
@@ -23,6 +59,8 @@ class MapPageState extends State<MapPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   static LatLng zurich = LatLng(47.37174, 8.54226);
   static LatLng basel = LatLng(47.5596, 7.5886);
+  static LatLng bern = LatLng(46.936902035920376, 7.43279159346369);
+
   LatLng showLocation = zurich;
   String searchFor = '';
   static const String route = '/';
@@ -43,7 +81,7 @@ class MapPageState extends State<MapPage> {
   var grid_size_hori = 11;
   var grid_size_vert = 8;
 
-  void _addMarkerFromList() {
+  void _addMarkerFromList(List<heatmapCell> heatmapCells) {
     while (markers.isNotEmpty) {
       markers.removeLast();
     }
@@ -71,32 +109,51 @@ class MapPageState extends State<MapPage> {
             (map_corner_left_down.longitude - map_corner_right_up.longitude) /
                 grid_size_vert *
                 grid_count_verti;
-        var rng = new Random();
         var min_screen_side = screenSize(context).shortestSide;
-        markers.add(Marker(
-          point: LatLng(latitude, longitude),
-          builder: (ctx) => Container(
-              child: GestureDetector(
-            onTap: () {},
-            child: Icon(
-              Icons.stop,
-              size: min_screen_side * 0.2,
-              color: getRandColor(
-                  rng.nextInt(100)), // Colors.green.withOpacity(0.5),
-            ),
-          )),
-        ));
+        var minDistance = 1000.0;
+        heatmapCell closesedCell;
+        for (heatmapCell cell in heatmapCells) {
+          if (cell.weekday == 0) {
+            if (cell.hour == 15) {
+              var x = latitude - cell.lat;
+              var y = longitude - cell.lng;
+              var distance = x * x + y * y;
+              if (distance < minDistance) {
+                minDistance = distance;
+                closesedCell = cell;
+              }
+            }
+          }
+        }
+        ;
+
+        if (minDistance < 0.0001) {
+          minDistance = minDistance * 1e5;
+          markers.add(Marker(
+            point: LatLng(latitude, longitude),
+            builder: (ctx) => Container(
+                child: GestureDetector(
+              onTap: () {},
+              child: Icon(
+                Icons.stop,
+                size: min_screen_side * 0.2,
+                color: getRandColor(
+                    closesedCell.load), // Colors.green.withOpacity(0.5),
+              ),
+            )),
+          ));
+        }
       }
     }
   }
 
   Color getRandColor(int r) {
-    if (r < 20) {
-      return Colors.red.withOpacity(0.5);
-    } else if (r < 70) {
+    if (r < 15) {
       return Colors.green.withOpacity(0.5);
-    } else if (r < 100) {
+    } else if (r < 35) {
       return Colors.orange.withOpacity(0.5);
+    } else {
+      return Colors.red.withOpacity(0.5);
     }
   }
 
@@ -113,7 +170,8 @@ class MapPageState extends State<MapPage> {
               height: 32,
             ),
             Text(' Crowdy - Your Level: '),
-            Image.asset(('assets/4Goldfaultier.png'),
+            Image.asset(
+              ('assets/4Goldfaultier.png'),
               fit: BoxFit.contain,
               height: 32,
             ),
@@ -123,10 +181,14 @@ class MapPageState extends State<MapPage> {
       drawer: buildDrawer(context, route),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          _addMarkerFromList();
-          setState(() {
-            markers = List.from(markers);
+          _loadHeatmapCells().then((value) {
+            _addMarkerFromList(value);
+
+            setState(() {
+              markers = List.from(markers);
+            });
           });
+          ;
         },
         icon: Icon(Icons.loop),
         label: Text("Show occupancy"),
@@ -136,12 +198,13 @@ class MapPageState extends State<MapPage> {
           FlutterMap(
             mapController: mapController,
             options: MapOptions(
-              center: zurich,
+              center: bern,
               zoom: 14.0,
             ),
             layers: [
               TileLayerOptions(
-                  urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  urlTemplate:
+                      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                   subdomains: ['a', 'b', 'c']),
               MarkerLayerOptions(markers: markers)
             ],
@@ -181,8 +244,7 @@ class MapPageState extends State<MapPage> {
                       },
                       decoration: InputDecoration(
                           border: InputBorder.none,
-                          contentPadding:
-                          EdgeInsets.symmetric(horizontal: 15),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 15),
                           hintText: "Search..."),
                     ),
                   ),
