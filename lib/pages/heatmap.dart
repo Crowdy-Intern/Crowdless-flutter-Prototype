@@ -137,21 +137,20 @@ class MapPageState extends State<MapPage> {
   }
 
   var markers = <Marker>[];
-  var grid_size_hori = 11;
-  var grid_size_vert = 8;
+  var grid_size_hori = 1; //11
+  var grid_size_vert = 1; //8
 
   void _addMarkerFromList(List<heatmapCell> heatmapCells) {
     while (markers.isNotEmpty) {
       markers.removeLast();
     }
-    if (screenSize(context).aspectRatio > 1) {
-      grid_size_hori = 6;
-      grid_size_vert = 15;
-    } else {
-      grid_size_hori = 11;
-      grid_size_vert = 8;
-    }
-
+    var min_screen_side =
+        screenSize(context).height * screenSize(context).width;
+    grid_size_hori = (min_screen_side / 60000).round();
+    grid_size_vert =
+        (grid_size_hori * screenSize(context).aspectRatio).round(); //15
+    print(screenSize(context).aspectRatio);
+    print(grid_size_vert);
     var map_corner_right_up = mapController.bounds.northEast;
     var map_corner_left_down = mapController.bounds.southWest;
     for (int grid_count_hori in [
@@ -168,7 +167,6 @@ class MapPageState extends State<MapPage> {
             (map_corner_left_down.longitude - map_corner_right_up.longitude) /
                 grid_size_vert *
                 grid_count_verti;
-        var min_screen_side = screenSize(context).shortestSide;
         var minDistance = 1000.0;
         heatmapCell closesedCell;
         for (heatmapCell cell in heatmapCells) {
@@ -185,7 +183,7 @@ class MapPageState extends State<MapPage> {
           }
         }
         ;
-
+        print(min_screen_side);
         if (minDistance < 0.0001) {
           minDistance = minDistance * 1e5;
           markers.add(Marker(
@@ -193,9 +191,9 @@ class MapPageState extends State<MapPage> {
             builder: (ctx) => Container(
                 child: GestureDetector(
               onTap: () {},
-              child: Icon(
-                Icons.stop,
-                size: min_screen_side * 0.2,
+              child: Container(
+                height: min_screen_side / grid_size_vert * 5,
+                width: min_screen_side / grid_size_vert * 5,
                 color: getRandColor(
                     closesedCell.load), // Colors.green.withOpacity(0.5),
               ),
@@ -258,7 +256,7 @@ class MapPageState extends State<MapPage> {
             mapController: mapController,
             options: MapOptions(
               center: bern,
-              zoom: 14.0,
+              zoom: 15.0,
             ),
             layers: [
               TileLayerOptions(
