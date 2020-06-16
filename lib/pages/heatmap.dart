@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:async' show Future;
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
+import 'dart:math';
 import '../widgets/drawer.dart';
 
 const crowd_blauton = const Color(0xFF3A4D5D);
@@ -144,12 +145,14 @@ class MapPageState extends State<MapPage> {
     while (markers.isNotEmpty) {
       markers.removeLast();
     }
-    var min_screen_side =
-        screenSize(context).height * screenSize(context).width;
-    grid_size_hori = (min_screen_side / 60000).round();
+    var min_screen_side = screenSize(context).shortestSide;
+    grid_size_hori = (5000 / min_screen_side).round();
     grid_size_vert =
         (grid_size_hori * screenSize(context).aspectRatio).round(); //15
-    print(screenSize(context).aspectRatio);
+    grid_size_hori = (screenSize(context).height / 60).round();
+    grid_size_vert = (screenSize(context).width / 60).round();
+
+    print(screenSize(context).shortestSide);
     print(grid_size_vert);
     var map_corner_right_up = mapController.bounds.northEast;
     var map_corner_left_down = mapController.bounds.southWest;
@@ -192,8 +195,8 @@ class MapPageState extends State<MapPage> {
                 child: GestureDetector(
               onTap: () {},
               child: Container(
-                height: min_screen_side / grid_size_vert * 5,
-                width: min_screen_side / grid_size_vert * 5,
+                height: min_screen_side / grid_size_vert * 10,
+                width: min_screen_side / grid_size_vert * 10,
                 color: getRandColor(
                     closesedCell.load), // Colors.green.withOpacity(0.5),
               ),
@@ -248,7 +251,7 @@ class MapPageState extends State<MapPage> {
           ;
         },
         icon: Icon(Icons.loop),
-        label: Text("Show occupancy"),
+        label: Text("Update occupancy"),
       ),
       body: Stack(
         children: [
