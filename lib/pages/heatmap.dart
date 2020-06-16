@@ -7,6 +7,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 import '../widgets/drawer.dart';
 
+const crowd_blauton = const Color(0xFF3A4D5D);
+
 class heatmapCell {
   final int load;
   final int hour;
@@ -67,10 +69,67 @@ class MapPageState extends State<MapPage> {
 
   MapController mapController;
 
+  showAlertDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      title: Row(children: [
+        Image.asset(
+          ('assets/icons/logo_color_small.png'),
+//          fit: BoxFit.contain,
+          height: 60,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RichText(
+                text: TextSpan(children: <TextSpan>[
+              TextSpan(
+                  text: ' CROWDY',
+                  style: TextStyle(
+                      color: crowd_blauton,
+                      fontSize: 31,
+                      fontWeight: FontWeight.w900)),
+            ])),
+            RichText(
+                text: TextSpan(children: <TextSpan>[
+              TextSpan(
+                  text: ' Sharing safety',
+                  style: TextStyle(
+                      fontFamily: "montserrat",
+                      color: crowd_blauton,
+                      fontSize: 30,
+                      fontWeight: FontWeight.normal)),
+            ])),
+          ],
+        ),
+      ]),
+      shape:
+          RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30)),
+      actions: [
+        FlatButton(
+          child: Text("Let's go!"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     mapController = MapController();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => showAlertDialog(context));
   }
 
   Size screenSize(BuildContext context) {
@@ -165,7 +224,7 @@ class MapPageState extends State<MapPage> {
         title: Row(
           children: [
             Image.asset(
-              ('assets/icons/logo_crowdy_small.png'),
+              ('assets/icons/logo_color_small.png'),
               fit: BoxFit.contain,
               height: 32,
             ),
@@ -209,7 +268,7 @@ class MapPageState extends State<MapPage> {
               MarkerLayerOptions(markers: markers)
             ],
           ),
-          Positioned(
+/*          Positioned(
             top: 10,
             right: 15,
             left: 15,
@@ -217,6 +276,7 @@ class MapPageState extends State<MapPage> {
               color: Colors.white,
               child: Row(
                 children: <Widget>[
+
                   IconButton(
                     splashColor: Colors.grey,
                     icon: Icon(Icons.search),
@@ -251,7 +311,7 @@ class MapPageState extends State<MapPage> {
                 ],
               ),
             ),
-          ),
+          ),*/
         ],
       ),
     );

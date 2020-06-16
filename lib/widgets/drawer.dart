@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../pages/ranking.dart';
 import '../pages/heatmap.dart';
@@ -11,11 +12,11 @@ Drawer buildDrawer(BuildContext context, String currentRoute) {
       children: <Widget>[
         DrawerHeader(
           child: Image(
-            image: AssetImage('assets/icons/logo_medium.png'),
+            image: AssetImage('assets/icons/logo_color.png'),
           ),
-          decoration: BoxDecoration(
-            color: Color(0xffF8E2B0),
-          ),
+//          decoration: BoxDecoration(
+//            color: Color(0xffF8E2B0),
+//          ),
         ),
         ListTile(
           title: const Text('Heatmap'),

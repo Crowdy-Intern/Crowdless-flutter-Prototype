@@ -8,6 +8,7 @@ dependencies:
   flutter_map:
   flutter_linkify:
   url_launcher:
+  google_fonts:
 
 dev_dependencies:
   flutter_test:
